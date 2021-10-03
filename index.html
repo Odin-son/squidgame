@@ -13,48 +13,18 @@
             crossorigin="anonymous"
         />
 
-        <title>Hello, world!</title>
+        <title>오징어게임 참가자</title>
         <link rel="stylesheet" href="style.css" />
         <!-- Go to www.addthis.com/dashboard to customize your tools -->
-<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-61597a2be2bcb336"></script>
-
+        <script
+            type="text/javascript"
+            src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-61597a2be2bcb336"
+        ></script>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light nav-distance">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">오징어게임</a>
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled">Disabled</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
         <section class="section">
-            <h1 class="title">인공지능 동물상 테스트 (남자)</h1>
-            <h2 class="subtitle">나는 어떤 동물과 닮았을까?</h2>
+            <h1 class="title">오징어게임 닮은꼴 찾기</h1>
+            <h2 class="subtitle">내 번호가...몇번이였더라?</h2>
         </section>
         <script
             class="jsbin"
@@ -80,23 +50,29 @@
                 </div>
             </div>
             <div class="file-upload-content">
-                <img class="file-upload-image" id="face-image" src="#" alt="your image" />
+                <img style="width: 20%" class="file-upload-image" id="face-image" src="#" alt="your image" />
+                <div id="loading">
+                    <img style="width: 30%" src="img/loading.gif" />
+                    <p class="text-center">무궁화 꽃이 피었습니다...</p>
+                </div>
+                <div id="results">
+                    <img style="width: 30%" class="result-image" src="#" />    
+                </div>
                 <p class="result-message"></p>
                 <div id="label-container"></div>
-                
-                
+
                 <!-- Go to www.addthis.com/dashboard to customize your tools -->
                 <div class="addthis_inline_share_toolbox"></div>
-            
+
                 <div class="pt-5 image-title-wrap">
                     <button type="button" onclick="removeUpload()" class="remove-image">
-                        Remove <span class="image-title">Uploaded Image</span>
+                        <span class="image-title">다른 사진으로 재시도</span>
                     </button>
                 </div>
             </div>
         </div>
         <div id="webcam-container"></div>
-        <div id="disqus_thread"></div>
+        <div class="pt-3 container dashboard" id="disqus_thread"></div>
         <script>
             /**
              *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
@@ -141,16 +117,20 @@
 
                     reader.onload = function (e) {
                         $('.image-upload-wrap').hide();
-
+                        $('#loading').show();
+                        $('#results').hide();
+                        
                         $('.file-upload-image').attr('src', e.target.result);
                         $('.file-upload-content').show();
-
                         $('.image-title').html(input.files[0].name);
                     };
 
                     reader.readAsDataURL(input.files[0]);
-                    init().then(()=>{
+                    init().then(() => {
                         predict();
+                        $('.file-upload-image').hide();
+                        $('#loading').hide();
+                        $('#results').show();
                     });
                 } else {
                     removeUpload();
@@ -174,7 +154,7 @@
             // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
             // the link to your model provided by Teachable Machine export panel
-            const URL = 'https://teachablemachine.withgoogle.com/models/GJnJGFdnr/';
+            const URL = 'https://teachablemachine.withgoogle.com/models/VyMCDIG5C/';
 
             let model, webcam, labelContainer, maxPredictions;
 
@@ -203,27 +183,63 @@
                 const prediction = await model.predict(image, false);
                 prediction.sort((a, b) => parseFloat(b.probability) - parseFloat(a.probability));
                 console.log(prediction[0].className);
-                var resultMessage;
-                switch(prediction[0].className){
-                    case "Class 1":
-                        resultMessage = "공유"
+                var result_title, result_msg;
+                switch (prediction[0].className) {
+                    case 'Class 1':
+                        result_title = 'No. 456';
+                        result_msg = '성기훈';
+                        $('.result-image').attr('src', 'img/456.png');
                         break;
-                    case "Class 2":
-                        resultMessage = "김영옥"
+                    case 'Class 2':
+                        result_title = 'No. 218';
+                        result_msg = '조상우';
+                        $('.result-image').attr('src', 'img/218.png');
                         break;
-                    case "Class 3":
-                        resultMessage = "이병헌"
+                    case 'Class 3':
+                        result_title = 'No. 067';
+                        result_msg = '강새벽';
+                        $('.result-image').attr('src', 'img/67.png');
+                        break;
+                    case 'Class 4':
+                        result_title = 'No. 001';
+                        result_msg = '오일남';
+                        $('.result-image').attr('src', 'img/1.png');
+                        break;
+                    case 'Class 5':
+                        result_title = 'No. 199';
+                        result_msg = '알리 압둘';
+                        $('.result-image').attr('src', 'img/199.png');
+                        break;
+                    case 'Class 6':
+                        result_title = 'No. 212';
+                        result_msg = '한미녀';
+                        $('.result-image').attr('src', 'img/212.png');
+                        break;
+                    case 'Class 7':
+                        result_title = 'ERROR';
+                        result_msg = '???';
+                        $('.result-image').attr('src', 'img/0.png');
+                        break;
+                    case 'Class 8':
+                        result_title = 'No. 101';
+                        result_msg = '장덕수';
+                        $('.result-image').attr('src', 'img/101.png');
                         break;
                     default:
-                        resultMessage = "알수없음"
-                        
+                        result_title = '알수없음';
+                        result_msg = '';
+                        $('.result-image').attr('src', 'img/0.png');
                 }
-                $('.result-message').html(resultMessage);
-                for (let i = 0; i < maxPredictions; i++) {
-                    const classPrediction =
-                        prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
-                    labelContainer.childNodes[i].innerHTML = classPrediction;
-                }
+                var title =
+                    "<div class='" + prediction[0].className + "'>" + result_title + '</div>';
+                var explain = "<div class='explain pt-2'>" + result_msg + '</div>';
+                $('.result-message').html(title + explain);
+
+                //for (let i = 0; i < maxPredictions; i++) {
+                //    const classPrediction =
+                //        prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
+                //    labelContainer.childNodes[i].innerHTML = classPrediction;
+                //}
             }
         </script>
     </body>
